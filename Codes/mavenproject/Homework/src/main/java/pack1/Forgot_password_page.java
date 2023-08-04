@@ -1,0 +1,133 @@
+package pack1;
+
+import java.awt.Component;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;	
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import java.awt.Font;
+import javax.swing.JPasswordField;
+import javax.swing.JFormattedTextField;
+import javax.swing.JTextArea;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+
+public class Forgot_password_page extends JFrame {
+
+	protected static final Component Forgot_password_page = null;
+	protected static final Component Register_Page = null;
+	private JPanel contentPane;
+	private JTextField txt_key;
+	private JTextField txt_username;
+	protected Manager[] managers;
+
+	/**
+	 * Launch the application.
+	 */
+	
+	static ArrayList<Manager> managers1 = new ArrayList<Manager>(); 
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Forgot_password_page frame = new Forgot_password_page();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Forgot_password_page() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 442, 295);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		
+		JButton btnsend = new JButton("SEND");
+		btnsend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String key = "123";
+				String securitycode=txt_key.getText();
+				String username = txt_username.getText();
+				
+				Manager_Controller mng_cnt = new Manager_Controller();
+				
+				try {
+					managers1 = mng_cnt.getManagers();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				for (Manager m : managers1) {
+					if(key.equals(key) && username.equals(m.username)) {
+						JOptionPane.showMessageDialog(Register_Page, "Hello"+" "+m.name+" "+"Your Password is " + " "+m.password);
+					}
+					else {
+						JOptionPane.showMessageDialog(Register_Page, "Your Security Code Or Username is Wrong Please Try Again");
+					}
+				}
+					
+				
+				
+				
+				
+				
+				
+				
+				
+			}
+		});
+		btnsend.setBounds(151, 179, 115, 36);
+		contentPane.add(btnsend);
+		
+		JLabel lblNewLabel = new JLabel("Security Code");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel.setBounds(94, 69, 89, 36);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblUsername.setBounds(94, 116, 89, 36);
+		contentPane.add(lblUsername);
+		
+		txt_key = new JTextField();
+		txt_key.setBounds(193, 78, 86, 20);
+		contentPane.add(txt_key);
+		txt_key.setColumns(10);
+		
+		txt_username = new JTextField();
+		txt_username.setColumns(10);
+		txt_username.setBounds(193, 125, 86, 20);
+		contentPane.add(txt_username);
+		
+		JButton btnexit = new JButton("Exit");
+		btnexit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		btnexit.setBounds(327, 222, 89, 23);
+		contentPane.add(btnexit);
+		
+		JLabel lblNewLabel_1 = new JLabel("Forgot Password Page");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNewLabel_1.setBounds(94, 11, 251, 56);
+		contentPane.add(lblNewLabel_1);
+	}
+}

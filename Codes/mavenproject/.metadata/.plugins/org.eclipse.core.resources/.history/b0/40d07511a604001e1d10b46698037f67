@@ -1,0 +1,177 @@
+package pack1;
+
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+public class Show_Customers_Page extends JFrame {
+
+	protected static final Component Show_Customers_Page = null;
+	private JPanel contentPane;
+	private JTable table;
+	private JTextField txtfilter;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Show_Customers_Page frame = new Show_Customers_Page();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 * @throws SQLException 
+	 */
+	public Show_Customers_Page() throws SQLException {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 553, 473);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 73, 425, 250);
+		contentPane.add(scrollPane);
+		
+		
+		final Show_Customers_Controller showcontroller = new Show_Customers_Controller();
+		ResultSet rs = (ResultSet) showcontroller.getList();
+		
+		
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		DefaultTableModel model = new DefaultTableModel();
+		table.setModel(model);
+		
+		JLabel lblNewLabel = new JLabel("Filter : ");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblNewLabel.setBounds(25, 30, 77, 32);
+		contentPane.add(lblNewLabel);
+		
+		
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+		table.setRowSorter(sorter);
+		
+		
+		
+		txtfilter = new JTextField();
+		txtfilter.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				String text =txtfilter.getText();
+				sorter.setRowFilter(RowFilter.regexFilter("(i?)"+text));
+			}
+		});
+		txtfilter.setBounds(84, 38, 86, 20);
+		contentPane.add(txtfilter);
+		txtfilter.setColumns(10);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				After_Login aftlog = new After_Login();
+				aftlog.setVisible(true);
+				Show_Customers_Page shwcstpage;
+				try {
+					shwcstpage = new Show_Customers_Page();
+					shwcstpage.dispose();
+					
+					shwcstpage.dispose();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnBack.setBounds(35, 360, 166, 23);
+		contentPane.add(btnBack);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int[] selected_rows = table.getSelectedRows();
+				
+				for (int i = 0; i < selected_rows.length; i++) {
+					try {
+						showcontroller.Delete((int) table.getValueAt(selected_rows[i]-1, 0));
+						model.removeRow(selected_rows[i]-i);
+						JOptionPane.showMessageDialog(btnDelete, "Customer Deleted!");
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+				
+				
+					
+				
+			}
+		});
+		btnDelete.setBounds(285, 360, 148, 23);
+		contentPane.add(btnDelete);
+		
+		JLabel lblcusto_count = new JLabel("New label");
+		lblcusto_count.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblcusto_count.setBounds(229, 30, 120, 32);
+		contentPane.add(lblcusto_count);
+		
+		
+		
+		
+		int col_number = rs.getMetaData().getColumnCount();
+		Object[] columnnames = new Object[col_number];
+		for (int i = 1; i < col_number; i++) {
+			columnnames[i-1]=rs.getMetaData().getColumnName(i);
+			
+		}
+		model.setColumnIdentifiers(columnnames);
+		
+		
+		
+		while(rs.next()) {
+			Object[] row = new Object[col_number];
+			for(int i =1;i<col_number;i++) {
+				row[i-1]= rs.getObject(i);
+			}
+			model.addRow(row);
+		}
+		
+		
+	}
+}
